@@ -6,11 +6,16 @@ import Service from './Service';
 const Login = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({ email: '', password: '', invalidCredentials: '' });
+
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = {};
+  const newErrors = {
+    email: '',
+    password: '',
+    invalidCredentials: '', // Clear invalid credentials error
+  };
 
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -52,17 +57,18 @@ const Login = () => {
         });
         navigate('/todo-list');
         Service.setToken(response.data.token);
-        // Add logic to handle successful login, e.g., redirecting to another page
+        
       } catch (error) {
         console.error('Axios Error:', error);
+        console.log("catch block")
   
         if (error.response) {
           console.error('Response Data:', error.response.data);
           console.error('Response Status:', error.response.status);
-  
+        
           if (error.response.status === 401) {
-            // Invalid credentials, show the error message
             setErrors({ invalidCredentials: 'Invalid credentials' });
+            console.log('Errors after setting invalid credentials:', errors);
           }
           // Add logic to handle other login failures, if needed
         } else if (error.request) {

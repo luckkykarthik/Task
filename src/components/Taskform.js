@@ -1,7 +1,4 @@
-// TaskForm.js
-
 import React, { useState } from 'react';
-import Todolist from './Todolist';
 import Service from './Service';
 
 const TaskForm = ({ onFormSubmit }) => {
@@ -55,6 +52,7 @@ const TaskForm = ({ onFormSubmit }) => {
         setTask({ title: '', description: '', due_date: '' });
         setSuccessMessage('Task created successfully!');
         setIsSuccessVisible(true);
+        setErrors({}); // Reset errors
 
         // Hide success message after 3 seconds
         setTimeout(() => {
@@ -62,6 +60,14 @@ const TaskForm = ({ onFormSubmit }) => {
         }, 3000);
       } catch (error) {
         console.error('Error creating task:', error);
+
+        if (error.response && error.response.status === 409) {
+          // Conflict: Title already exists
+          setErrors({ title: 'Title already exists' });
+        } else {
+          // Other errors
+          setErrors({ generic: 'Error creating task' });
+        }
       }
     }
   };
@@ -72,6 +78,7 @@ const TaskForm = ({ onFormSubmit }) => {
         <div className="card-body">
           <h5 className="card-title">Todos Management System</h5>
           {isSuccessVisible && <div className="alert alert-success">{successMessage}</div>}
+          {errors.generic && <div className="alert alert-danger">{errors.generic}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input
@@ -99,7 +106,7 @@ const TaskForm = ({ onFormSubmit }) => {
               <input
                 type="date"
                 className={`form-control ${errors.due_date ? 'is-invalid' : ''}`}
-                name="due_date"  
+                name="due_date"
                 value={task.due_date}
                 onChange={changeHandler}
               />

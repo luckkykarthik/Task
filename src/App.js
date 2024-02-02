@@ -1,32 +1,3 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
-// import Login from './components/Login';
-// import TaskForm from './components/Taskform';
-// import Register from './components/Register';
-// import Navbar from './components/Navbar';
-// import Home from './components/Home';
-// import Todolist from './components/Todolist';
-
-// const App = () => {
-//   return (
-//     <Router>
-//       <div>
-//         <Navbar />
-//         <Routes>
-//           <Route path="/" element={<Home />} />
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/register" element={<Register />} />
-//           <Route path="/create-task" element={<TaskForm/>}/>
-//          <Route path="/todo-list" element={<Todolist/>}/>
-//         </Routes>
-//       </div>
-//     </Router>
-//   );
-// };
-
-// export default App;
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
@@ -43,6 +14,14 @@ const PrivateRoute = ({ element }) => {
   return Service.isLoggedIn() ? element : <Navigate to="/login" />;
 };
 
+const ProtectedRoute = ({ element }) => {
+  return Service.isLoggedIn() ? <Navigate to="/" /> : element;
+};
+
+const NotFound = () => {
+  return <Navigate to="/" />;
+};
+
 const App = () => {
   return (
     <Router>
@@ -50,9 +29,11 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/update-task/:id" element={<Update />} />
+          <Route path="/login" element={<ProtectedRoute element={<Login />} />} />
+          <Route path="/register" element={<ProtectedRoute element={<Register />} />} />
+
+          <Route path="/update-task/:id" 
+            element={<PrivateRoute element={<Update />} />} />
           <Route
             path="/create-task"
             element={<PrivateRoute element={<TaskForm />} />}
@@ -65,6 +46,7 @@ const App = () => {
             path="/todo-list"
             element={<PrivateRoute element={<Todolist />} />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>

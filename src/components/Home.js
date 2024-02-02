@@ -10,7 +10,7 @@ const Home = () => {
     <section class="hero">
       <div class="hero-content">
         <h1>
-          <span id="text-animation">Welcome to the <span>Projects Management System</span></span>
+          <span id="text-animation">Welcome to the <span>Tasks Management System</span></span>
         </h1>
         <h5>Efficiently manage your Student Projects</h5><br/>
         <Link to="/login" className='btn-pri'>Get Started</Link>
